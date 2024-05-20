@@ -308,6 +308,7 @@ const authTypesMap: Record<string, string[]> = {
 };
 
 // Sort Orders
+export const LOCAL_STORAGE_SORT_ORDER = 'collection.sortOrder';
 export type SortOrder =
   | 'name-asc'
   | 'name-desc'

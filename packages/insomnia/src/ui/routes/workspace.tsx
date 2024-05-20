@@ -1,7 +1,7 @@
 import React from 'react';
 import { LoaderFunction, Outlet } from 'react-router-dom';
 
-import { SortOrder } from '../../common/constants';
+import { LOCAL_STORAGE_SORT_ORDER, SortOrder } from '../../common/constants';
 import { database } from '../../common/database';
 import { fuzzyMatchAll } from '../../common/misc';
 import { sortMethodMap } from '../../common/sorting';
@@ -120,7 +120,7 @@ export const workspaceLoader: LoaderFunction = async ({
 
   const searchParams = new URL(request.url).searchParams;
   const filter = searchParams.get('filter');
-  const sortOrder = searchParams.get('sortOrder') as SortOrder;
+  const sortOrder = searchParams.get('sortOrder') as SortOrder || window.localStorage.getItem(LOCAL_STORAGE_SORT_ORDER);
   const sortFunction = sortMethodMap[sortOrder] || sortMethodMap['type-manual'];
 
   // first recursion to get all the folders ids in order to use nedb search by an array

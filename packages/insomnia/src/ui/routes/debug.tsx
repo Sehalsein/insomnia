@@ -33,7 +33,7 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 
-import { DEFAULT_SIDEBAR_SIZE, SORT_ORDERS, SortOrder, sortOrderName } from '../../common/constants';
+import { DEFAULT_SIDEBAR_SIZE, LOCAL_STORAGE_SORT_ORDER, SORT_ORDERS, SortOrder, sortOrderName } from '../../common/constants';
 import { ChangeBufferEvent, database as db } from '../../common/database';
 import { generateId } from '../../common/misc';
 import { PlatformKeyCombinations } from '../../common/settings';
@@ -437,7 +437,11 @@ export const Debug: FC = () => {
   const setActiveEnvironmentFetcher = useFetcher();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const sortOrder = searchParams.get('sortOrder') as SortOrder || 'type-manual';
+  const sortOrder =
+    (searchParams.get('sortOrder') as SortOrder) ||
+    window.localStorage.getItem(LOCAL_STORAGE_SORT_ORDER) ||
+    'type-manual';
+
   const { hotKeyRegistry } = settings;
 
   const createRequest = ({ requestType, parentId, req }: { requestType: CreateRequestType; parentId: string; req?: Partial<Request> }) =>
@@ -871,12 +875,13 @@ export const Debug: FC = () => {
                 aria-label="Sort order"
                 className="h-full aspect-square"
                 selectedKey={sortOrder}
-                onSelectionChange={order =>
+                onSelectionChange={order => {
+                  window.localStorage.setItem(LOCAL_STORAGE_SORT_ORDER, order.toString());
                   setSearchParams({
                     ...Object.fromEntries(searchParams.entries()),
                     sortOrder: order.toString(),
-                  })
-                }
+                  });
+                }}
               >
                 <Button
                   aria-label="Select sort order"
